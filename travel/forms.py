@@ -1,35 +1,44 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField, PasswordField, SubmitField, StringField, BooleanField
-from wtforms.validators import DataRequired, InputRequired, Length, Email, EqualTo
+from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField
+from wtforms.validators import InputRequired, Email, EqualTo
+from flask_wtf.file import FileRequired, FileField, FileAllowed
 
+ALLOWED_FILE = {'PNG', 'JPG', 'JPEG', 'png', 'jpg', 'jpeg'}
+
+
+# Create new destination
 class DestinationForm(FlaskForm):
     name = StringField('Country', validators=[InputRequired()])
-    # Adding two validators:
-    # One to ensure input is entered
-    # Other to check if the description meets the length requirements
-    description = TextAreaField('Description', validators=[InputRequired()])
-    image = StringField('Cover Image', validators=[InputRequired()])
+    description = TextAreaField('Description',
+                                validators=[InputRequired()])
+    image = FileField('Destination Image', validators=[
+        FileRequired(message='Image cannot be empty'),
+        FileAllowed(ALLOWED_FILE, message='Only supports PNG, JPG, png, jpg')])
     currency = StringField('Currency', validators=[InputRequired()])
-    submit = SubmitField('Create')
-
-class CommentForm(FlaskForm):
-    text = TextAreaField('Comment', validators=[InputRequired()])
-    submit = SubmitField('Create')
-
-class RegistrationForm(FlaskForm):
-    username = StringField('Username',
-                           validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
+    submit = SubmitField("Create")
 
 
+# User login
 class LoginForm(FlaskForm):
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
-    submit = SubmitField('Login')
+    user_name = StringField("User Name", validators=[InputRequired('Enter user name')])
+    password = PasswordField("Password", validators=[InputRequired('Enter user password')])
+    submit = SubmitField("Login")
+
+
+# User register
+class RegisterForm(FlaskForm):
+    user_name = StringField("User Name", validators=[InputRequired()])
+    email_id = StringField("Email Address", validators=[Email("Please enter a valid email")])
+
+    # linking two fields - password should be equal to data entered in confirm
+    password = PasswordField("Password", validators=[InputRequired(),
+                                                     EqualTo('confirm', message="Passwords should match")])
+    confirm = PasswordField("Confirm Password")
+    # submit button
+    submit = SubmitField("Register")
+
+
+# User comment
+class CommentForm(FlaskForm):
+    text = TextAreaField('Comment', [InputRequired()])
+    submit = SubmitField('Create')
