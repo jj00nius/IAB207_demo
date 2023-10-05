@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
 
     # string print method
     def __repr__(self):
-        return f"Name: {self.name}"
+        return f"Name: {self.name}, Password: {self.password_hash}"
 
 
 class Destination(db.Model):

@@ -6,10 +6,11 @@ from flask_bcrypt import Bcrypt
 import datetime
 
 db = SQLAlchemy()
+app = Flask(__name__)
 
 
 def create_app():
-    app = Flask(__name__)
+
     # we use this utility module to display forms quickly
     Bootstrap5(app)
 
